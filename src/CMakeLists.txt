@@ -1,9 +1,8 @@
 # BUILD LIBRARY FROM LOCAL FiLES FOR THE MAIN LIBRARY
-file(GLOB SRC "*.cpp") 
+file(GLOB SRC "*.hpp" "*.cpp") 
 include_directories($ENV{JPACPLOTTER}/src)
 
 add_library(JPACPLOTTER SHARED ${SRC} )
-
 target_link_libraries( JPACPLOTTER ROOT::Core ROOT::MathMore ROOT::Matrix ROOT::RIO ROOT::Rint ROOT::Gpad ROOT::Hist)
 
 install(TARGETS JPACPLOTTER

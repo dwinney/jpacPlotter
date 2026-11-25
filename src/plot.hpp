@@ -300,6 +300,7 @@ namespace jpacPlotter
 
         inline void set_legend(double x, double y){ _addlegend = true; _legendxcord = x; _legendycord = y; };
         inline void set_legend(bool x){_addlegend = x;};
+        inline void set_legend(double x, double y, double z){ set_legend(x,y); set_legend_spacing(z); };
         inline void add_header(std::string x){ _header = x; _addheader = true; };
         inline void add_header(std::string variable, double value, std::string units = "")
         {

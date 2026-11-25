@@ -6,8 +6,8 @@
 // Email:        dwinney@iu.edu
 // ---------------------------------------------------------------------------
 
-#ifndef UTILITIES_HPP
-#define UTILITIES_HPP
+#ifndef DATASET_HPP
+#define DATASET_HPP
 
 #include <ios>
 #include <iostream>
@@ -18,6 +18,7 @@
 #include <functional>
 #include <fstream>
 #include <map>
+#include <complex>
 
 namespace jpacPlotter
 {
@@ -265,6 +266,9 @@ namespace jpacPlotter
     {
         return lhs + (-rhs);
     };
+
+    std::vector<double> real(std::vector<std::complex<double>> vx);
+    std::vector<double> imag(std::vector<std::complex<double>> vx);
 };
 
 #endif
