@@ -288,6 +288,19 @@ namespace jpacUtils
         for (auto x : vx) out.push_back(imag(x));
         return out;
     };
+
+    inline std::vector<double> add_in_quadrature(std::vector<double> x, std::vector<double> y)
+    {
+        if (x.size() != y.size()) return error("add_in_quadrature - Input vectors not the same size!", std::vector<double>());
+
+        std::vector<double> out;
+        for (unsigned int i = 0; i < x.size(); i++)
+        {
+            double z = sqrt(x[i]*x[i] + y[i]*y[i]);
+            out.push_back(z);
+        };
+        return out;
+    };
 };
 
 #endif

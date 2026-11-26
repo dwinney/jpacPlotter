@@ -1,4 +1,4 @@
-// Useful functions and methods
+// Useful mathematical functions and methods
 //
 // ---------------------------------------------------------------------------
 // Author:       Daniel Winney (2024)
@@ -19,7 +19,7 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
-
+#include <complex>
 #include "print.hpp"
 
 namespace jpacUtils
@@ -29,53 +29,25 @@ namespace jpacUtils
     
     using complex = std::complex<double>;
     #ifndef PI
-    const double PI   = M_PI;
+        const double PI = M_PI;
     #endif
     #ifndef I
-    const complex I   (0., 1.);
+        const complex I(0., 1.);
+    #endif
+    #ifndef NAN
+        const double NAN  = std::numeric_limits<double>::quiet_nan(); 
     #endif
     
     const double DEG2RAD  = (M_PI / 180.);
-    const double EPS      = 1.e-8;
+    const double EPS      = 1.E-8;
     const complex IEPS    = I*EPS;
+    const double ALPHA    = 1. / 137.;
+    const double HBARC    = 389379; // nb/GeV^2
+    const double E        = sqrt(4. * PI * ALPHA);
     
-    // ---------------------------------------------------------------------------
-    // Angles
-    
-    inline double degrees(double radians){ return radians*DEG2RAD; };
-    inline double radians(double degrees){ return degrees/DEG2RAD; };
-
-    // ------------------------------------------------------------------------------
-    // NaN's, 0, and 1 for throwing errors with custom data types
-
-    template<typename T>
-    inline T NaN()
-    {
-        return std::numeric_limits<T>::quiet_NaN();
-    };
-
-    template<>
-    inline complex NaN() 
-    {
-        return complex(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
-    };
-
-    template<typename T>
-    T zero();
-
-    template<>
-    inline complex zero() { return 0; };
-
-    template<typename T> 
-    T identity();
-
-    template<>
-    inline complex identity() { return 1; };
-
     // ---------------------------------------------------------------------------
     // Out of the box std::complex<double> doesnt play well with ints. Here we explicitly
     // give it the functionality we want
-
 
     // Additionally the complex type is a liitle dim in c++ so we need to define int & bool multiplication
     inline complex operator*(const int& c, const complex& rhs)
@@ -144,21 +116,30 @@ namespace jpacUtils
     {
         return (z != static_cast<double> (n));
     }
+    
+    // ---------------------------------------------------------------------------
+    // Angles
+    
+    inline double degrees(double radians){ return radians*DEG2RAD; };
+    inline double radians(double degrees){ return degrees/DEG2RAD; };
+
+    // ---------------------------------------------------------------------------
+    // Useful math functions
 
     // This makes it so we always default to complex regardless of whether the input is an int or double
     template<typename T>
     complex csqrt(T x){ return sqrt(x * complex(1,0)); };
 
-    inline unsigned int factorial(unsigned int n) 
-    {
-        if (n == 0)
-        return 1;
-        return n * factorial(n - 1);
-    };
+    // Gamma function of complex argument 'z'
+    // optional parameter OPT = 1 can be used to return the log of Gamma(z)
+    std::complex<double> cgamma(std::complex<double> z, int OPT = 0);
 
-    // ---------------------------------------------------------------------------
+    unsigned int factorial(unsigned int n);
+
+        // Legendre function in terms of cosine theta
+    complex legendre(int l, complex z);
+    
     // Kallen Triangle function
-
     // Only way to get a double or int Kallen is if all inputs are double/int
     template<typename T>
     inline T kallen(T x, T y, T z)
@@ -172,6 +153,20 @@ namespace jpacUtils
     inline complex kallen(double a, double b, complex z) { return kallen<complex>(complex(1,0)*a, complex(1,0)*b, z); };
 
     inline int sign(double x){ return (x >= 0) ? +1 : -1; }
+
+    // ---------------------------------------------------------------------------
+    // Wigner d-func coefficient of leading power
+    double wigner_leading_coeff(int j, int lam1, int lam2);
+
+    // Wigner d-function for half-integer spin
+    double wigner_d_half(int j, int lam1, int lam2, double theta);
+
+    // Wigner d-function for integer spin
+    double wigner_d_int(int j, int lam1, int lam2, double theta);
+
+    // Wigner d-function for integer spin in terms of the cosine of theta not theta
+    complex wigner_d_int_cos( int j, int lam1, int lam2, complex cos);
+    complex wigner_d_half_cos(int j, int lam1, int lam2, complex cos);
 
     // ---------------------------------------------------------------------------
     // Function for easier comparison of doubles using the EPS value defined above
@@ -253,7 +248,7 @@ namespace jpacUtils
             default : 
             {
                 warning("central_difference_derivative", "Order n = "+to_string(n)+" derivatives not implemented!"); 
-                return NaN<T>();
+                return NAN;
             };
         };
         return num / pow(h, n);
@@ -276,7 +271,7 @@ namespace jpacUtils
             default : 
             {
                 warning("forward_difference_derivative", "Order n = "+to_string(n)+" derivatives not implemented!"); 
-                return NaN<T>();
+                return NAN;
             };
         };
         T num = 0;
@@ -302,7 +297,7 @@ namespace jpacUtils
             default : 
             {
                 warning("forward_difference_derivative", "Order n = "+to_string(n)+" derivatives not implemented!"); 
-                return NaN<T>();
+                return NAN;
             };
         };
         T num = 0;
