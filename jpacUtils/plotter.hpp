@@ -13,6 +13,8 @@
 #define PLOTTER_HPP
 
 #include "plot.hpp"
+#include "plot2D.hpp"
+#include "colors.hpp"
 
 #include <array>
 
@@ -24,7 +26,7 @@
 #include <TLatex.h>
 #include <string>
 
-namespace jpacPlotter
+namespace jpacUtils
 {    
     // The plotter object is the basic structure for setting up a plot in ROOT 
     // using the JPAC style.
@@ -64,9 +66,36 @@ namespace jpacPlotter
             return plot(canvas, file);
         };
 
+        // Create a new 2D plot!
+        plot2D new_plot2D(std::string file = "")
+        {
+            // Make it the global default style
+            gROOT->SetStyle("jpacStyle");
+
+            // Set up a new canvas 
+            _Nplots++;
+            std::string name = "c" + std::to_string(_Nplots);
+            TCanvas *canvas = new TCanvas(name.c_str(), name.c_str(), 600, 600);
+            canvas->UseCurrentStyle();
+            canvas->SetTopMargin(0.1);
+            canvas->SetRightMargin(0.16);
+            canvas->SetLeftMargin(0.14);
+            canvas->SetBottomMargin(0.13);
+            canvas->SetFixedAspectRatio();
+            
+            if (file == "") file += "plot" + std::to_string(_Nplots) + ".pdf";
+            
+            // Pass this to the plot which will populate it with everything else
+            return plot2D(canvas, file);
+        };
+
+        // Same thing as above except allow different typed (plot and plot2D) to be combined
+        static void combine(std::array<int,2> dims, std::vector<plot2D> hists, std::string filename);
+
         // Combine a vector of plots into a grid of specified dimensions
         static void combine(std::array<int,2> dims, std::vector<plot> plots, std::string filename);
 
+        // Combine several plots in a vertical column sharing the same x-axis
         static void stack(std::vector<plot> plots, std::string filename);
 
         private:

@@ -6,8 +6,8 @@
 // Email:        dwinney@iu.edu
 // ---------------------------------------------------------------------------
 
-#ifndef DATASET_HPP
-#define DATASET_HPP
+#ifndef DATA_HPP
+#define DATA_HPP
 
 #include <ios>
 #include <iostream>
@@ -20,7 +20,10 @@
 #include <map>
 #include <complex>
 
-namespace jpacPlotter
+#include "print.hpp"
+#include "math.hpp"
+
+namespace jpacUtils
 {
     struct data_set
     {     
@@ -38,7 +41,7 @@ namespace jpacPlotter
         std::vector<double> _x, _y, _z;
 
         // Other possible vectors to store things like bin sizes, etc
-        std::array<std::vector<double>, 2> _xerr, _yerr, _zerr;
+        std::array<std::vector<double>, 2> _dx, _dy, _dz;
 
         // In additon, save any number of extra parameters that may be needed to 
         // identify the data set
@@ -155,6 +158,7 @@ namespace jpacPlotter
         return N;
     };
 
+
     // ---------------------------------------------------------------------------
     // Element-wise operations on data vectors
 
@@ -213,28 +217,20 @@ namespace jpacPlotter
     template<typename T>
     inline std::vector<T> operator+(std::vector<T> lhs, std::vector<T> rhs)
     {
-        if (lhs.size() != rhs.size())
-        {   
-            std::cout << "Attempted to add two vectors of different sizes!" << std::endl;
-            return std::vector<T>();
-        };
+        if (lhs.size() != rhs.size()) return error("Attempted to add two vectors of different sizes!", std::vector<double>());
 
         std::vector<T> result;
-        for (unsigned int i = 0; i < lhs.size(); i++) result.push_back( lhs[i] + rhs[i] );
+        for (uint i = 0; i < lhs.size(); i++) result.push_back( lhs[i] + rhs[i] );
         return result;
     };
 
     template<typename T>
     inline std::vector<T> operator-(std::vector<T> lhs, std::vector<T> rhs)
     {
-        if (lhs.size() != rhs.size())
-        {   
-            std::cout << "Attempted to add two vectors of different sizes!" << std::endl;
-            return std::vector<T>();
-        };
+        if (lhs.size() != rhs.size()) return error("Attempted to add two vectors of different sizes!", std::vector<double>());
 
         std::vector<double> result;
-        for (unsigned int i = 0; i < lhs.size(); i++) result.push_back( lhs[i] - rhs[i] );
+        for (uint i = 0; i < lhs.size(); i++) result.push_back( lhs[i] - rhs[i] );
         return result;
     };
 
@@ -243,7 +239,7 @@ namespace jpacPlotter
     inline std::vector<T> operator+(double lhs, std::vector<T> rhs)
     {
         std::vector<T> result;
-        for (unsigned int i = 0; i < rhs.size(); i++) result.push_back( lhs + rhs[i] );
+        for (uint i = 0; i < rhs.size(); i++) result.push_back( lhs + rhs[i] );
         return result;
     };   
     
@@ -257,7 +253,7 @@ namespace jpacPlotter
     inline std::vector<T> operator+(std::vector<T> lhs, double rhs)
     {
         std::vector<T> result;
-        for (unsigned int i = 0; i < lhs.size(); i++) result.push_back( rhs + lhs[i] );
+        for (uint i = 0; i < lhs.size(); i++) result.push_back( rhs + lhs[i] );
         return result;
     };
 
@@ -267,8 +263,31 @@ namespace jpacPlotter
         return lhs + (-rhs);
     };
 
-    std::vector<double> real(std::vector<std::complex<double>> vx);
-    std::vector<double> imag(std::vector<std::complex<double>> vx);
+    inline std::vector<double> multiply_elementwise(std::vector<double> in1, std::vector<double> in2)
+    {
+        if (in1.size() != in2.size()) warning("multiply_elementwise()", "Input vectors not the same size!");
+
+        std::vector<double> out;
+        for (uint i = 0; i < in1.size(); i++)
+        {
+            out.push_back(in1[i]*in2[i]);
+        }
+        return out;
+    };
+    inline std::vector<double> square_elementwise(std::vector<double> in){ return multiply_elementwise(in, in); };
+
+    inline std::vector<double> real(std::vector<complex> vx)
+    {
+        std::vector<double> out;
+        for (auto x : vx) out.push_back(real(x));
+        return out;
+    };
+    inline std::vector<double> imag(std::vector<complex> vx)
+    {
+        std::vector<double> out;
+        for (auto x : vx) out.push_back(imag(x));
+        return out;
+    };
 };
 
 #endif

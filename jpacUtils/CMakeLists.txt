@@ -1,0 +1,10 @@
+# BUILD LIBRARY FROM LOCAL FiLES FOR THE MAIN LIBRARY
+file(GLOB SRC "*.hpp" "*.cpp") 
+include_directories($ENV{JPACUTILS}/src)
+
+add_library(JPACUTILS SHARED ${SRC} )
+target_link_libraries( JPACUTILS ROOT::Core ROOT::MathMore ROOT::Matrix ROOT::RIO ROOT::Rint ROOT::Gpad ROOT::Hist)
+
+install(TARGETS JPACUTILS
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )

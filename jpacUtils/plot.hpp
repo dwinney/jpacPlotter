@@ -31,143 +31,15 @@
 #include <TLine.h>
 #include <TStyle.h>
 
-#include "data_set.hpp"
+#include "colors.hpp"
+#include "data.hpp"
+#include "math.hpp"
 
-namespace jpacPlotter
+namespace jpacUtils
 {
     // Forward declaration
     class plotter;
-
-    //---------------------------------------------------------------------
-    // Give each jpacColor a ROOT TColor index name so it may be called globally after its initialized
-    enum class jpacColor: Int_t { Blue   = 2001, Red      = 2002, Green = 2003,
-                                  Orange = 2004, Purple   = 2005, Brown = 2006, 
-                                  Pink   = 2007, Gold     = 2008, Aqua  = 2009, 
-                                  Grey   = 2010, DarkGrey = 2011                };
-
-    // Convert from jpacColor to its underlying int
-    inline constexpr Int_t operator+(jpacColor x)
-    {
-        return static_cast<Int_t>(x);
-    };
-
-    constexpr std::array<jpacColor,11> JPACCOLORS = {jpacColor::Blue,   jpacColor::Red,    jpacColor::Green, 
-                                                     jpacColor::Orange, jpacColor::Purple, jpacColor::Brown, 
-                                                     jpacColor::Pink,   jpacColor::Gold,   jpacColor::Aqua, 
-                                                     jpacColor::Grey,   jpacColor::DarkGrey };
-
-
-    //---------------------------------------------------------------------
-    // Line styles 
-
-    struct entry_style
-    {
-        jpacColor _color      = jpacColor::DarkGrey;  // Color code 
-        int  _style           = 0;                    // Either linestyle or markerstyle code
-        bool _add_to_legend   = true;                 // Whether to add this curve to the legend
-        std::string _label    = "";                   // Label to add to Legend
-        std::string _draw_opt = "L";                  // string which enters ROOT::Draw() 
-    };
-
-    inline entry_style dashed(jpacColor color, std::string id = "")
-    {
-        entry_style custom;
-        custom._color = color;
-        custom._style = kDashed;
-        custom._label = id;
-        custom._add_to_legend = (custom._label != "");
-        return custom;
-    };
-
-    inline entry_style solid(jpacColor color, std::string id = "")
-    {
-        entry_style custom;
-        custom._color = color;
-        custom._style = kSolid;
-        custom._label = id;
-        custom._add_to_legend = (custom._label != "");
-        return custom;
-    };
-
-    inline entry_style dotted(jpacColor color, std::string id = "")
-    {
-        entry_style custom;
-        custom._color = color;
-        custom._style = kDotted;
-        custom._label = id;
-        custom._add_to_legend = (custom._label != "");
-        return custom;
-    };
-
-    inline entry_style dash_dotted(jpacColor color, std::string id = "")
-    {
-        entry_style custom;
-        custom._color = color;
-        custom._style = kDashDotted;
-        custom._label = id;
-        custom._add_to_legend = (custom._label != "");
-        return custom;
-    };
-
-    // Also for data points
-    inline entry_style dot(jpacColor color, std::string id = "")
-    {
-        entry_style marker;
-        marker._color = color;
-        marker._style = 20; 
-        marker._label = id;
-        marker._add_to_legend = (id != "");
-        marker._draw_opt = "P";
-        return marker;
-    };
-
-    inline entry_style square(jpacColor color, std::string id = "")
-    {
-        entry_style marker;
-        marker._color = color;
-        marker._style = 21; 
-        marker._label = id;
-        marker._add_to_legend = (id != "");
-        marker._draw_opt = "P";
-        return marker;
-    };
-
-    inline entry_style triangle(jpacColor color, std::string id = "")
-    {
-        entry_style marker;
-        marker._color = color;
-        marker._style = 22; 
-        marker._label = id;
-        marker._add_to_legend = (id != "");
-        marker._draw_opt = "P";
-        return marker;
-    };
-
-    inline entry_style star(jpacColor color, std::string id = "")
-    {
-        entry_style marker;
-        marker._color = color;
-        marker._style = 29; 
-        marker._label = id;
-        marker._add_to_legend = (id != "");
-        marker._draw_opt = "P";
-        return marker;
-    };
-
-    inline entry_style open_dot(jpacColor color, std::string id = "")
-    {
-        auto x = dot(color, id);
-        x._style = 24;
-        return x;
-    };
-
-    inline entry_style open_square(jpacColor color, std::string id = "")
-    {
-        auto x = dot(color, id);
-        x._style = 25;
-        return x;
-    };
-
+    
       // Each entry represents a curve to draw as a TGraph
     struct plot_entry 
     {

@@ -10,7 +10,7 @@
 
 #include "plot.hpp"
 
-namespace jpacPlotter
+namespace jpacUtils
 {
     // ---------------------------------------------------------------------------
     // Outputting function, generates plot and saves it to file
@@ -208,9 +208,9 @@ namespace jpacPlotter
     void plot::add_data(data_set data)
     {
         double *x, *z, *xl, *xh, *zl, *zh;
-        x  = &(data._x[0]);        z  = &(data._z[0]);
-        xl = &(data._xerr[0][0]);  xh = &(data._xerr[1][0]);
-        zl = &(data._zerr[0][0]);  zh = &(data._zerr[1][0]);
+        x  = &(data._x[0]);      z  = &(data._z[0]);
+        xl = &(data._dx[0][0]);  xh = &(data._dx[1][0]);
+        zl = &(data._dz[0][0]);  zh = &(data._dz[1][0]);
 
         TGraph *graph = new TGraphAsymmErrors(data._N, x, z, xl, xh, zl, zh);
 
@@ -230,9 +230,9 @@ namespace jpacPlotter
     void plot::add_data(data_set data, entry_style style)
     {
         double *x, *z, *xl, *xh, *zl, *zh;
-        x  = &(data._x[0]);        z  = &(data._z[0]);
-        xl = &(data._xerr[0][0]);  xh = &(data._xerr[1][0]);
-        zl = &(data._zerr[0][0]);  zh = &(data._zerr[1][0]);
+        x  = &(data._x[0]);      z  = &(data._z[0]);
+        xl = &(data._dx[0][0]);  xh = &(data._dx[1][0]);
+        zl = &(data._dz[0][0]);  zh = &(data._dz[1][0]);
 
         TGraph *graph = new TGraphAsymmErrors(data._N, x, z, xl, xh, zl, zh);
 

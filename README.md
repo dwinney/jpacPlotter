@@ -1,15 +1,16 @@
-# jpacPlotter
+# jpacUtils
 
-Methods to easily make plots within ROOT. Originally this was an internal module of [jpacPhoto](https://github.com/dwinney/jpacPhoto) but now justifies being its own module to be added into other projects as well. 
+Methods with common and otherwise useful methods for JPAC analyses. 
 
+Originally these were internal modules of [jpacPhoto](https://github.com/dwinney/jpacPhoto) and [iterateKT](https://github.com/dwinney/iterateKT) but better place them as a unified external library to avoid copy and pasting into each new project.
 
 ## INSTALLATION
 Simply clone normally and install with cmake. Compilation requires only ROOT (tested with versions 6.17 and 6.24).
 ```bash
-cd jpacPhoto
+cd jpacUtilities
 mkdir build && cd build
 cmake ..
 cmake --build . --target install
 ```
 
-To make the library searchable by cmake in other projects define an environment variable `$JPACPLOTTER` pointing to the top-level installation directiory.
+To make the library searchable by cmake in other projects define an environment variable `$JPACUTILITIES` pointing to the top-level installation directiory.
