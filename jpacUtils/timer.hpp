@@ -11,7 +11,7 @@
 #define TIMER_HPP
 
 #include <chrono>
-#include "utilities.hpp"
+#include "print.hpp"
 
 namespace jpacUtils
 {
