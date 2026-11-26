@@ -14,3 +14,10 @@ cmake --build . --target install
 ```
 
 To make the library searchable by cmake in other projects define an environment variable `$JPACUTILITIES` pointing to the top-level installation directiory.
+
+# References
++ [1] [JPAC Website](https://www.jpac-physics.org/)
+
+<p align="center">
+  <img width="300" src="./doc/JPAClogo.png">
+</p>
